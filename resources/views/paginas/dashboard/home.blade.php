@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-header mx-4 p-3 text-center">
                         <div
-                            class="icon icon-shape icon-lg bg-gradient-primary shadow text-center border-radius-lg">
+                            class="icon icon-shape icon-lg bg-gradient-info shadow text-center border-radius-lg">
                             <i class="fas fa-landmark opacity-10"></i>
                         </div>
                     </div>

@@ -49,4 +49,4 @@ RUN CI=true
 
 USER root
 
-EXPOSE 8181
+EXPOSE 8282

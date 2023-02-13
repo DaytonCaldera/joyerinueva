@@ -5,7 +5,7 @@ services:
     build:
       context: .
     ports:
-      - 8181:80
+      - 8282:80
     volumes:
       - .:/var/www/html:Z
       - vendor:/var/www/html/vendor 

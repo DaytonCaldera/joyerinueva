@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  webapp:
+    image: ubuntu:latest
+    build:
+      context: .
+    ports:
+      - 8181:80
+    volumes:
+      - .:/var/www/html:Z
+      - vendor:/var/www/html/vendor 
+      - storage:/var/www/html/storage
+
+volumes:
+  vendor:
+  storage:
+

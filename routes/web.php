@@ -48,4 +48,12 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static');
 	Route::get('/{page}', [PageController::class, 'index'])->name('page');
 	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+	Route::get('/admin/contratos',[HomeController::class, 'index'])->name('contratos');
+	Route::get('/admin/renovaciones',[HomeController::class, 'index'])->name('renovaciones');
+	Route::get('/admin/clientes',[HomeController::class, 'index'])->name('clientes');
+	Route::get('/admin/usuarios',[HomeController::class, 'index'])->name('usuarios');
+	Route::get('/admin/articulos',[HomeController::class, 'index'])->name('articulos');
+
 });
+

@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\ResetPassword;
+use App\Http\Controllers\ChangePassword;
+use App\Http\Controllers\ArticuloController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,18 +20,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-	return view('welcome');
-});
-
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\UserProfileController;
-use App\Http\Controllers\ResetPassword;
-use App\Http\Controllers\ChangePassword;
 
 
 Route::get('/', function () {
@@ -53,7 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/admin/renovaciones',[HomeController::class, 'index'])->name('renovaciones');
 	Route::get('/admin/clientes',[HomeController::class, 'index'])->name('clientes');
 	Route::get('/admin/usuarios',[HomeController::class, 'index'])->name('usuarios');
-	Route::get('/admin/articulos',[HomeController::class, 'index'])->name('articulos');
+	Route::get('/admin/articulos',[ArticuloController::class, 'admin_view'])->name('articulos');
 
 });
 

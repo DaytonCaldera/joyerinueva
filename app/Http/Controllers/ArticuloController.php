@@ -18,6 +18,11 @@ class ArticuloController extends Controller
         //
     }
 
+    public function admin_view(){
+        return view('paginas.articulos.admin');
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *

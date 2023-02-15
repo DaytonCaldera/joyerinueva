@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8" />
@@ -42,7 +42,7 @@
                 <main class="main-content border-radius-lg">
                     @yield('content')
                 </main>
-            @include('components.fixed-plugin')
+            {{-- @include('components.fixed-plugin') --}}
         @endif
     @endauth
 

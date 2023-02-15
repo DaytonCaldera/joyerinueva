@@ -28,6 +28,7 @@ Route::get('/', function () {
 Route::get('/home', function () {
 	return redirect('/dashboard');
 })->middleware('auth');
+
 // Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 // Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
 Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');
@@ -53,6 +54,13 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/admin/clientes',[HomeController::class, 'index'])->name('clientes');
 	Route::get('/admin/usuarios',[HomeController::class, 'index'])->name('usuarios');
 	Route::get('/admin/articulos',[ArticuloController::class, 'admin_view'])->name('articulos');
+
+	/*
+		Rutas para administracion de Familia - Categoria - Articulos
+	*/
+	Route::post('/admin/add/familia', [ArticuloController::class,'add_familia'])->name('agregar.familia');
+	Route::post('/admin/add/categoria', [ArticuloController::class,'add_categoria'])->name('agregar.categoria');
+	Route::post('/admin/add/articulo', [ArticuloController::class,'add_articulo'])->name('agregar.articulo');
 
 });
 

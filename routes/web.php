@@ -8,6 +8,7 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\ArticuloController;
+use App\Http\Controllers\ClientesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,18 +50,21 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/{page}', [PageController::class, 'index'])->name('page');
 	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-	Route::get('/admin/contratos',[HomeController::class, 'index'])->name('contratos');
-	Route::get('/admin/renovaciones',[HomeController::class, 'index'])->name('renovaciones');
-	Route::get('/admin/clientes',[HomeController::class, 'index'])->name('clientes');
-	Route::get('/admin/usuarios',[HomeController::class, 'index'])->name('usuarios');
-	Route::get('/admin/articulos',[ArticuloController::class, 'admin_view'])->name('articulos');
+	Route::get('/admin/contratos', [HomeController::class, 'index'])->name('contratos');
+	Route::get('/admin/renovaciones', [HomeController::class, 'index'])->name('renovaciones');
+	Route::get('/admin/clientes', [ClientesController::class, 'index'])->name('clientes');
+	Route::get('/admin/usuarios', [HomeController::class, 'index'])->name('usuarios');
+	Route::get('/admin/articulos', [ArticuloController::class, 'admin_view'])->name('articulos');
 
 	/*
 		Rutas para administracion de Familia - Categoria - Articulos
 	*/
-	Route::post('/admin/add/familia', [ArticuloController::class,'add_familia'])->name('agregar.familia');
-	Route::post('/admin/add/categoria', [ArticuloController::class,'add_categoria'])->name('agregar.categoria');
-	Route::post('/admin/add/articulo', [ArticuloController::class,'add_articulo'])->name('agregar.articulo');
+	Route::post('/admin/add/familia', [ArticuloController::class, 'add_familia'])->name('agregar.familia');
+	Route::post('/admin/add/categoria', [ArticuloController::class, 'add_categoria'])->name('agregar.categoria');
+	Route::post('/admin/add/articulo', [ArticuloController::class, 'add_articulo'])->name('agregar.articulo');
 
+	/**
+	 * Rutas para administracion de clientes
+	 */
+	Route::post('/admin/add/cliente', [ClientesController::class,'store'])->name('agregar.cliente');
 });
-

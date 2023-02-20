@@ -19,6 +19,8 @@
         "sass-loader": "^12.6.0"
     },
     "dependencies": {
+        "datatables.net": "^1.13.2",
+        "datatables.net-dt": "^1.13.2",
         "perfect-scrollbar": "^1.5.5"
     }
 }

@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Inicio'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Articulos'])
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-lg-6">
@@ -133,8 +133,10 @@
                                     @foreach ($articulos as $articulo)
                                         <tr>
                                             <td>{{ $articulo->descripcion }}</td>
-                                            <td class="align-middle text-xs">{{ $categorias->find($articulo->categoria)->descripcion }}</td>
-                                            <td class="align-middle text-xs">{{ $familias->find($articulo->familia)->descripcion }}</td>
+                                            <td class="align-middle text-xs">
+                                                {{ $categorias->find($articulo->categoria)->descripcion }}</td>
+                                            <td class="align-middle text-xs">
+                                                {{ $familias->find($articulo->familia)->descripcion }}</td>
                                             <td class="align-middle">
                                                 <a href="javascript:;" class="text-secondary font-weight-bold text-xs"
                                                     data-toggle="tooltip" data-original-title="Edit user">
@@ -151,6 +153,7 @@
             </div>
             @include('layouts.footers.auth.footer')
         </div>
+    </div>
     @endsection
     @push('js')
         @if (session('success'))

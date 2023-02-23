@@ -9,6 +9,7 @@ use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\ArticuloController;
 use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\ContratosController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,7 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/{page}', [PageController::class, 'index'])->name('page');
 	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-	Route::get('/admin/contratos', [HomeController::class, 'index'])->name('contratos');
+	Route::get('/admin/contratos', [ContratosController::class, 'index'])->name('contratos');
 	Route::get('/admin/renovaciones', [HomeController::class, 'index'])->name('renovaciones');
 	Route::get('/admin/clientes', [ClientesController::class, 'index'])->name('clientes');
 	Route::get('/admin/usuarios', [HomeController::class, 'index'])->name('usuarios');
@@ -67,4 +68,10 @@ Route::group(['middleware' => 'auth'], function () {
 	 * Rutas para administracion de clientes
 	 */
 	Route::post('/admin/add/cliente', [ClientesController::class,'store'])->name('agregar.cliente');
+
+	/**
+	 * Rutas para administracion de contratos
+	 */
+	Route::get('admin/contratos/historial/{id}',[ContratosController::class,'history'])->name('contratos.cliente');
+	Route::post('admin/add/contrato',[ContratosController::class,'store'])->name('agregar.contrato');
 });

@@ -26,7 +26,6 @@
                             </div>
                             <div class="col-md-6">
                                 <button class="btn btn-success form-control" id="btn_nuevo">
-                                    <span class="spinner-border spinner-border-sm loading" role="status" aria-hidden="false"></span>
                                     <span class="">Nuevo contrato</span>
                                 </button>
                             </div>
@@ -46,8 +45,10 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col-md-12">
-                                <input type="button" class="btn btn-info form-control" id="client_history_btn"
-                                    value="Buscar">
+                                <button class="btn btn-info form-control" id="client_history_btn">
+                                    <span class="spinner-border spinner-border-sm loading" role="status" aria-hidden="true" hidden></span>
+                                    <span class="">Buscar historial</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -57,12 +58,15 @@
         <div class="row mt-4">
             <div class="col-lg-12">
                 <div class="card" id="nuevo_contrato" style="display: none">
-                    <div class="card-header" id="contrato_title">Nuevo contrato</div>
+                    <div class="card-header" id="contrato_title">
+                        <span class="title">Nuevo contrato</span>
+                        <button class="btn btn-sm btn-danger">Cancelar contrato</button>
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-4">
                                 <select name="articulos" class="form-control input-lg" id="articulos">
-                                    <option>Seleccione para añadir articulo</option>
+                                    <option value="-1">Seleccione para añadir articulo</option>
                                     @foreach ($articulos as $articulo)
                                         <option value="{{$articulo->id}}">{{$articulo->descripcion}}</option>
                                     @endforeach
@@ -107,9 +111,9 @@
     <link rel="stylesheet" href="{{ asset('/public/assets/css/chosen.min.css') }}">
 @endpush
 @push('js')
-    <script src="{{ asset('/public/assets/js/core/jquery.min.js') }}"></script>
-    <script src="{{ asset('/public/assets/js/core/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('/public/assets/js/core/chosen.jquery.min.js') }}"></script>
-    <script src="{{ asset('/public/assets/js/core/jsgrid.min.js') }}"></script>
+    {{-- <script src="{{ asset('/public/assets/js/core/jquery.min.js') }}"></script>
+    <script src="{{ asset('/public/assets/js/core/jquery-ui.min.js') }}"></script> --}}
+    {{-- <script src="{{ asset('/public/assets/js/core/chosen.jquery.min.js') }}"></script> --}}
+    {{-- <script src="{{ asset('/public/assets/js/core/jsgrid.min.js') }}"></script> --}}
     <script src="{{ asset('/public/assets/js/paginas/Contratos.js') }}"></script>
 @endpush

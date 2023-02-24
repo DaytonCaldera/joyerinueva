@@ -28,7 +28,7 @@ class Contratos {
         this.loadNewItemsTable();
     }
     historyClientEvent(e, btn) {
-        this.loadClientHistoryTable();
+        this.loadClientHistoryTable(btn);
     }
 
     showSearchBlock() {
@@ -50,7 +50,8 @@ class Contratos {
 
     }
 
-    showHistoryBlock() {
+    showHistoryBlock(btn) {
+        btn.querySelector('.loading').setAttribute('hidden', true);
         $("#buscar_contrato").hide();
         $("#nuevo_contrato").hide();
         $("#historial_cliente").show();
@@ -59,7 +60,7 @@ class Contratos {
         // document.getElementById('historial_cliente').removeAttribute('hidden');
     }
 
-    loadClientHistoryTable() {
+    loadClientHistoryTable(btn) {
         let $this = this;
         let client_id = $("#client_id").val();
         $("#historialJsGrid").jsGrid({
@@ -68,21 +69,33 @@ class Contratos {
             controller: {
                 loadData: function (filter) {
                     return $.ajax({
+                        beforeSend: function () {
+                            btn.querySelector('.loading').removeAttribute('hidden');
+                        },
                         type: "GET",
                         url: "/admin/contratos/historial/" + client_id,
                         data: filter
                     }).done(function () {
-                        $this.showHistoryBlock();
+                        $this.showHistoryBlock(btn);
                     });
                 },
             },
             fields: [
-                { name: "numcontra", title: "N.C.", type: "text", width: 50 },
+                { name: "id", title: "N.C.", type: "text", width: 50 },
                 { name: "cedula", title: "Cedula", type: "text", width: 150, filtering: false },
                 { name: "fecha_contrato", title: "Fecha contrato", type: "text", width: 200 },
                 { name: "fecha_vencimiento", title: "Vencimiento", type: "text", width: 100, },
                 { name: "vencido", type: "checkbox", title: "Esta vencido", sorting: false, filtering: false },
-                { type: "control" }
+                {
+                    type: "control", editButton: false, deleteButton: false,
+                    itemTemplate: function (val, item) {
+                        var $customEditButton = $("<button>").attr({ class: "customGridEditbutton jsgrid-button jsgrid-edit-button" })
+                            .click(function(e) {
+                                $this.showSearchBlock();
+                            });
+                            return $("<div>").append($customEditButton);
+                    }
+                }
             ]
         });
     }
@@ -94,16 +107,21 @@ class Contratos {
 
             fields: [
                 { name: "descripcion", type: "text" },
-                { name: "prestamo", type: "text" }
+                { name: "prestamo", type: "text" },
+                { type: "control" }
             ]
         });
 
     }
 
     addItem() {
-        var data = {
-            id_articulo: $("#articulos").val(),
-            descripcion: $("#articulos").text(),
+        if($("#articulos option:selected").val() == -1){
+            
+            return;
+        }
+        let data = {
+            id_articulo: $("#articulos option:selected").val(),
+            descripcion: $("#articulos option:selected").text(),
             prestamo: $("#prestamo").val(),
         }
         $("#newjsGrid").jsGrid("insertItem", data)

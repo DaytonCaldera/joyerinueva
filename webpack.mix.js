@@ -15,3 +15,4 @@ mix.js('resources/js/app.js', 'public/assets/js/argon-dashboard.js')
     .sass('resources/scss/argon-dashboard.scss', 'public/assets/css/argon-dashboard.css', [
         //
     ]);
+mix.js('resources/js/custom/app.js','public/assets/js/custom/custom.js');

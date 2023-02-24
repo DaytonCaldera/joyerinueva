@@ -43,7 +43,7 @@ class Contratos {
         $("#buscar_contrato").hide();
         $("#nuevo_contrato").show();
         $("#historial_cliente").hide();
-        $("#articulos").chosen();
+        $("#articulos").select2();
         // document.getElementById('buscar_contrato').setAttribute('hidden', true);
         // document.getElementById('nuevo_contrato').removeAttribute('hidden');
         // document.getElementById('historial_cliente').setAttribute('hidden', true);
@@ -90,10 +90,10 @@ class Contratos {
                     type: "control", editButton: false, deleteButton: false,
                     itemTemplate: function (val, item) {
                         var $customEditButton = $("<button>").attr({ class: "customGridEditbutton jsgrid-button jsgrid-edit-button" })
-                            .click(function(e) {
+                            .on('click', function (e) {
                                 $this.showSearchBlock();
                             });
-                            return $("<div>").append($customEditButton);
+                        return $("<div>").append($customEditButton);
                     }
                 }
             ]
@@ -115,8 +115,8 @@ class Contratos {
     }
 
     addItem() {
-        if($("#articulos option:selected").val() == -1){
-            
+        if ($("#articulos option:selected").val() == -1) {
+
             return;
         }
         let data = {

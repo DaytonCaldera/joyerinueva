@@ -20,7 +20,8 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <button class="btn btn-warning form-control" id="btn_buscar">
-                                    <span class="spinner-border spinner-border-sm loading" role="status" aria-hidden="true"></span>
+                                    <span class="spinner-border spinner-border-sm loading" role="status"
+                                        aria-hidden="true"></span>
                                     <span class="">Buscar contrato</span>
                                 </button>
                             </div>
@@ -46,7 +47,8 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <button class="btn btn-info form-control" id="client_history_btn">
-                                    <span class="spinner-border spinner-border-sm loading" role="status" aria-hidden="true" hidden></span>
+                                    <span class="spinner-border spinner-border-sm loading" role="status" aria-hidden="true"
+                                        hidden></span>
                                     <span class="">Buscar historial</span>
                                 </button>
                             </div>
@@ -59,21 +61,28 @@
             <div class="col-lg-12">
                 <div class="card" id="nuevo_contrato" style="display: none">
                     <div class="card-header" id="contrato_title">
-                        <span class="title">Nuevo contrato</span>
-                        <button class="btn btn-sm btn-danger">Cancelar contrato</button>
-                    </div>
+                        <div class="d-flex">
+                            <p>Nuevo contrato</p>
+                            <div class="ms-auto">
+                                <button class="btn btn-sm btn-danger">Cancelar contrato</button>
+                            </div>
+                        </div>
+                        {{-- <span class="title">Nuevo contrato</span>
+                        <button class="btn btn-sm btn-danger">Cancelar contrato</button> --}}
+                    </div> 
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-4">
                                 <select name="articulos" class="form-control input-lg" id="articulos">
                                     <option value="-1">Seleccione para añadir articulo</option>
                                     @foreach ($articulos as $articulo)
-                                        <option value="{{$articulo->id}}">{{$articulo->descripcion}}</option>
+                                        <option value="{{ $articulo->id }}">{{ $articulo->descripcion }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-lg-4">
-                                <input type="number" class="form-control form-control-sm" placeholder="Prestamo" id="prestamo">
+                                <input type="number" class="form-control form-control-sm" placeholder="Prestamo"
+                                    id="prestamo">
                             </div>
                             <div class="col-lg-4">
                                 <button class="btn btn-xs btn-danger" id="add_item">
@@ -105,15 +114,10 @@
 @endsection
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('/public/assets/css/jsgrid.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('/public/assets/css/jsgrid-theme.min.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('/public/assets/css/jsgrid.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/public/assets/css/jsgrid-theme.min.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('/public/assets/css/jquery-ui.css') }}">
-    <link rel="stylesheet" href="{{ asset('/public/assets/css/chosen.min.css') }}">
 @endpush
 @push('js')
-    {{-- <script src="{{ asset('/public/assets/js/core/jquery.min.js') }}"></script>
-    <script src="{{ asset('/public/assets/js/core/jquery-ui.min.js') }}"></script> --}}
-    {{-- <script src="{{ asset('/public/assets/js/core/chosen.jquery.min.js') }}"></script> --}}
-    {{-- <script src="{{ asset('/public/assets/js/core/jsgrid.min.js') }}"></script> --}}
     <script src="{{ asset('/public/assets/js/paginas/Contratos.js') }}"></script>
 @endpush

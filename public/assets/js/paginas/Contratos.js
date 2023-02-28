@@ -46,7 +46,7 @@ class Contratos {
         this.loadNewItemsTable();
     }
     historyClientEvent(e, btn) {
-        this.loadClientHistoryTable(btn);
+        this.getHistoryClient(btn);
     }
 
     showSearchBlock() {
@@ -68,32 +68,37 @@ class Contratos {
         this.historyBlock.show();
     }
 
-    hideAllBlocks(){
+    hideAllBlocks() {
         this.searchBlock.hide();
         this.newBlock.hide();
         this.historyBlock.hide();
     }
 
-    loadClientHistoryTable(btn) {
-        let $this = this;
+    getHistoryClient(btn) {
         let client_id = $("#client_id").val();
+        $.ajax({
+            beforeSend: function () {
+                btn.querySelector('.loading').removeAttribute('hidden');
+            },
+            type: "GET",
+            url: "/admin/contratos/historial/" + client_id,
+            success: function (data) {
+                btn.querySelector('.loading').setAttribute('hidden', 'hidden');
+                if (Object.keys(data).length !== 0) {
+                    loadClientHistoryTable(data);
+                }else{
+                    failToast('El cliente digitado no existe o no tiene contratos');
+                }
+            }
+        });
+    }
+
+    loadClientHistoryTable(db) {
+        let $this = this;
         this.historyJsGrid.jsGrid({
             width: '100%',
             autoload: true,
-            controller: {
-                loadData: function (filter) {
-                    return $.ajax({
-                        beforeSend: function () {
-                            btn.querySelector('.loading').removeAttribute('hidden');
-                        },
-                        type: "GET",
-                        url: "/admin/contratos/historial/" + client_id,
-                        data: filter
-                    }).done(function () {
-                        $this.showHistoryBlock(btn);
-                    });
-                },
-            },
+            data: db,
             fields: [
                 { name: "id", title: "N.C.", type: "text", width: 50 },
                 { name: "cedula", title: "Cedula", type: "text", width: 150, filtering: false },

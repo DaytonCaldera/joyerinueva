@@ -21,7 +21,7 @@
                             <div class="col-md-6">
                                 <button class="btn btn-warning form-control" id="btn_buscar">
                                     <span class="spinner-border spinner-border-sm loading" role="status"
-                                        aria-hidden="true"></span>
+                                        aria-hidden="true" hidden></span>
                                     <span class="">Buscar contrato</span>
                                 </button>
                             </div>

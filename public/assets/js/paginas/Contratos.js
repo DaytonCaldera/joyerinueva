@@ -6,18 +6,36 @@ document.onreadystatechange = function () {
         let btnNew = document.getElementById('btn_nuevo');
         let btnHistory = document.getElementById('client_history_btn');
         let btnAddItem = document.getElementById('add_item');
+        let btnCancelNewContract = document.getElementById('btn_cancelar_nuevo_contrato');
+
 
         btnHistory.addEventListener('click', event => root.historyClientEvent(event, btnHistory));
         btnSearch.addEventListener('click', event => root.searchContractEvent(event, btnSearch));
         btnNew.addEventListener('click', event => root.newContractEvent(event, btnNew));
         btnAddItem.addEventListener('click', event => root.addItem(event, btnAddItem));
+        btnCancelNewContract.addEventListener('click', event => root.cancelNewContract(event));
 
     }
 }
 
 class Contratos {
     constructor() {
+        this.total = 0;
+        this.total_container = $("#total_prestamo");
+        this.new_contract_jsgrid = $("#newjsGrid");
+        this.searchBlock = $("#buscar_contrato");
+        this.newBlock = $("#nuevo_contrato");
+        this.historyBlock = $("#historial_cliente");
+        this.historyJsGrid = $("#historialJsGrid");
+    }
 
+    setTotal(val, notShow = false) {
+        this.total = val;
+        if (!notShow)
+            this.total_container.val(this.total)
+    }
+    getTotal() {
+        return this.total;
     }
 
     searchContractEvent(e, btn) {
@@ -32,38 +50,34 @@ class Contratos {
     }
 
     showSearchBlock() {
-        $("#buscar_contrato").show();
-        $("#nuevo_contrato").hide();
-        $("#historial_cliente").hide();
-        // document.getElementById('buscar_contrato').removeAttribute('hidden');
-        // document.getElementById('nuevo_contrato').setAttribute('hidden', true);
-        // document.getElementById('historial_cliente').setAttribute('hidden', true);
+        this.searchBlock.show();
+        this.newBlock.hide();
+        this.historyBlock.hide();
     }
     showNewBlock(e, btn) {
-        $("#buscar_contrato").hide();
-        $("#nuevo_contrato").show();
-        $("#historial_cliente").hide();
+        this.searchBlock.hide();
+        this.newBlock.show();
+        this.historyBlock.hide();
         $("#articulos").select2();
-        // document.getElementById('buscar_contrato').setAttribute('hidden', true);
-        // document.getElementById('nuevo_contrato').removeAttribute('hidden');
-        // document.getElementById('historial_cliente').setAttribute('hidden', true);
-
     }
 
     showHistoryBlock(btn) {
         btn.querySelector('.loading').setAttribute('hidden', true);
-        $("#buscar_contrato").hide();
-        $("#nuevo_contrato").hide();
-        $("#historial_cliente").show();
-        // document.getElementById('buscar_contrato').setAttribute('hidden', true);
-        // document.getElementById('nuevo_contrato').setAttribute('hidden', true);
-        // document.getElementById('historial_cliente').removeAttribute('hidden');
+        this.searchBlock.hide();
+        this.newBlock.hide();
+        this.historyBlock.show();
+    }
+
+    hideAllBlocks(){
+        this.searchBlock.hide();
+        this.newBlock.hide();
+        this.historyBlock.hide();
     }
 
     loadClientHistoryTable(btn) {
         let $this = this;
         let client_id = $("#client_id").val();
-        $("#historialJsGrid").jsGrid({
+        this.historyJsGrid.jsGrid({
             width: '100%',
             autoload: true,
             controller: {
@@ -101,32 +115,62 @@ class Contratos {
     }
 
     loadNewItemsTable() {
-        $("#newjsGrid").jsGrid({
+        let $this = this;
+        this.new_contract_jsgrid.jsGrid({
             autoload: true,
+            editing: true,
             width: "100%",
-
+            onItemDeleting: function (row) {
+                $this.updateTotal(row.item);
+            },
             fields: [
-                { name: "descripcion", type: "text" },
-                { name: "prestamo", type: "text" },
-                { type: "control" }
+                { name: "descripcion", type: "text", editing: false },
+                { name: "prestamo", type: "number" },
+                {
+                    type: "control",
+                    editButton: false
+                }
             ]
         });
 
     }
 
     addItem() {
-        if ($("#articulos option:selected").val() == -1) {
-
+        let articulo = $("#articulos option:selected");
+        let prestamo = $("#prestamo");
+        if (articulo.val() == -1) {
+            failToast('Debe seleccionar un articulo');
+            return;
+        }
+        if (prestamo.val() === '0' || prestamo.val() == '') {
+            failToast('Debe ingresar un monto');
             return;
         }
         let data = {
-            id_articulo: $("#articulos option:selected").val(),
-            descripcion: $("#articulos option:selected").text(),
-            prestamo: $("#prestamo").val(),
+            id_articulo: articulo.val(),
+            descripcion: articulo.text(),
+            prestamo: parseInt(prestamo.val()),
         }
-        $("#newjsGrid").jsGrid("insertItem", data)
+        this.setTotal(this.getTotal() + data.prestamo);
+        this.new_contract_jsgrid.jsGrid("insertItem", data);
+        this.resetItems();
     }
 
+    updateTotal(item) {
+        this.setTotal(this.getTotal() - item.prestamo);
+    }
 
+    resetItems(tableToo = false) {
+        $("#articulos").val('-1').trigger('change');;
+        $("#prestamo").val(0);
+        if (tableToo)
+            this.new_contract_jsgrid.jsGrid("option", "data", []);
+    }
+    cancelNewContract(e) {
+        this.resetItems(true);
+        this.setTotal(0);
+        this.new_contract_jsgrid.html('');
+        this.hideAllBlocks();
+    }
 
 }

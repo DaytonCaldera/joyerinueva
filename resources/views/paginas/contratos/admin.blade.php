@@ -64,12 +64,12 @@
                         <div class="d-flex">
                             <p>Nuevo contrato</p>
                             <div class="ms-auto">
-                                <button class="btn btn-sm btn-danger">Cancelar contrato</button>
+                                <button class="btn btn-sm btn-danger" id="btn_cancelar_nuevo_contrato">Cancelar contrato</button>
                             </div>
                         </div>
                         {{-- <span class="title">Nuevo contrato</span>
                         <button class="btn btn-sm btn-danger">Cancelar contrato</button> --}}
-                    </div> 
+                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-4">
@@ -81,16 +81,33 @@
                                 </select>
                             </div>
                             <div class="col-lg-4">
-                                <input type="number" class="form-control form-control-sm" placeholder="Prestamo"
+                                <input type="number" class="form-control form-control-sm" placeholder="Prestamo" value="0"
                                     id="prestamo">
                             </div>
                             <div class="col-lg-4">
-                                <button class="btn btn-xs btn-danger" id="add_item">
+                                <button class="btn btn-xs btn-info" id="add_item">
                                     Agregar articulo
                                 </button>
                             </div>
                         </div>
-                        <div id="newjsGrid"></div>
+                        <div class="row mt-4">
+                            <div class="col-lg-12">
+                                <div id="newjsGrid"></div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-4">
+                                <label for="total_prestamo">Total del prestamo</label>
+                                <input type="number" class="form-control" name="total" id="total_prestamo" placeholder="Total del prestamo">
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="fecha_prestamo">Fecha de contrato</label>
+                                <input type="date" class="form-control" name="total" id="fecha_prestamo" placeholder="Total del prestamo">
+                            </div>
+                            {{-- <div class="col-lg-4">
+                                <input type="number" class="form-control" name="total" id="total_prestamo" placeholder="Total del prestamo">
+                            </div> --}}
+                        </div>
                     </div>
                 </div>
                 <div class="card" id="buscar_contrato" style="display: none">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreContratosRequest;
 use App\Http\Requests\UpdateContratosRequest;
 use App\Models\Articulo;
+use App\Models\Clientes;
 use App\Models\Contratos;
 
 class ContratosController extends Controller
@@ -16,7 +17,7 @@ class ContratosController extends Controller
      */
     public function index()
     {
-        return view('paginas.contratos.admin')->with(['articulos' => Articulo::all()]);
+        return view('paginas.contratos.admin')->with(['articulos' => Articulo::all(),'clientes' => Clientes::all()]);
     }
 
     public function history($id)

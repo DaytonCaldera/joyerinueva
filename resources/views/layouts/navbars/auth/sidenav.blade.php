@@ -78,18 +78,19 @@
                 </a>
             </li> --}}
             @php
-                $activeLink = in_array(Route::currentRouteName(), ['contratos', 'renovaciones', 'articulos', 'clientes', 'usuarios']) ? 'active' : '';
+                $activeLinkProcesos = in_array(Route::currentRouteName(), ['contratos', 'renovaciones', 'articulos', 'clientes', 'usuarios']) ? 'active' : '';
+                $activeLinkAdmin = in_array(Route::currentRouteName(), ['parametros']) ? 'active' : '';
             @endphp
             <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#pagesExamples"
-                    class="nav-link collapsed {{ $activeLink ? 'active' : '' }}"
-                    aria-controls="pagesExamples" role="button" aria-expanded="{{ $activeLink ? 'true' : 'false' }}">
+                <a data-bs-toggle="collapse" href="#procesos"
+                    class="nav-link collapsed {{ $activeLinkProcesos ? 'active' : '' }}" aria-controls="procesos"
+                    role="button" aria-expanded="{{ $activeLinkProcesos ? 'true' : 'false' }}">
                     <div class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
                         <i class="ni ni-ungroup text-warning text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Procesos</span>
                 </a>
-                <div class="collapse {{ $activeLink ? 'show' : '' }}" id="pagesExamples" style="">
+                <div class="collapse {{ $activeLinkProcesos ? 'show' : '' }}" id="procesos" style="">
                     <ul class="nav ms-4">
                         <li class="nav-item ">
                             <a class="nav-link {{ Route::currentRouteName() == 'contratos' ? 'active' : '' }}"
@@ -134,6 +135,29 @@
                                         class="ni ni-circle-08 text-dark text-sm opacity-10"></i> </span>
                                 <i class="ni ni-circle-08 text-dark text-sm opacity-10"></i>
                                 <span class="sidenav-normal"> Usuarios </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#admin"
+                    class="nav-link collapsed {{ $activeLinkAdmin ? 'active' : '' }}" aria-controls="admin"
+                    role="button" aria-expanded="{{ $activeLinkAdmin ? 'true' : 'false' }}">
+                    <div class="icon icon-shape icon-sm text-center d-flex align-items-center justify-content-center">
+                        <i class="ni ni-ungroup text-warning text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Administracion</span>
+                </a>
+                <div class="collapse {{ $activeLinkAdmin ? 'show' : '' }}" id="admin" style="">
+                    <ul class="nav ms-4">
+                        <li class="nav-item ">
+                            <a class="nav-link {{ Route::currentRouteName() == 'parametros' ? 'active' : '' }}"
+                                href="{{ route('parametros') }}">
+                                <span class="sidenav-mini-icon"> <i
+                                        class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i> </span>
+                                <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
+                                <span class="sidenav-normal"> Parametros</span>
                             </a>
                         </li>
                     </ul>

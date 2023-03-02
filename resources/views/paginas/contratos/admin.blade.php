@@ -3,7 +3,7 @@
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Inicio'])
     <div class="container-fluid py-4">
-        <div class="row">
+        <div class="row" id="main_row">
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header mx-4 p-3">
@@ -20,8 +20,8 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <button class="btn btn-warning form-control" id="btn_buscar">
-                                    <span class="spinner-border spinner-border-sm loading" role="status"
-                                        aria-hidden="true" hidden></span>
+                                    <span class="spinner-border spinner-border-sm loading" role="status" aria-hidden="true"
+                                        hidden></span>
                                     <span class="">Buscar contrato</span>
                                 </button>
                             </div>
@@ -41,7 +41,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <input class="form-control" type="text" placeholder="Ingrese la cedula del cliente"
-                                    onfocus="focused(this)" id="client_id" onfocusout="defocused(this)">
+                                    onfocus="focused(this)" id="client_id_history" onfocusout="defocused(this)">
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -57,14 +57,17 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-4">
+        <div class="row">
             <div class="col-lg-12">
                 <div class="card" id="nuevo_contrato" style="display: none">
                     <div class="card-header" id="contrato_title">
                         <div class="d-flex">
-                            <p>Nuevo contrato</p>
+                            <p>
+                            <h4>Nuevo contrato</h4>
+                            </p>
                             <div class="ms-auto">
-                                <button class="btn btn-sm btn-danger" id="btn_cancelar_nuevo_contrato">Cancelar contrato</button>
+                                <button class="btn btn-sm btn-danger" id="btn_cancelar_nuevo_contrato">Cancelar
+                                    contrato</button>
                             </div>
                         </div>
                         {{-- <span class="title">Nuevo contrato</span>
@@ -72,19 +75,41 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-4">
+                            <div class="col-lg-3">
+                                <select name="clientes_search" class="form-control" id="clientes_search">
+                                    <option value="-1" data-notselectable="true">Buscar cedula de cliente</option>
+                                    @foreach ($clientes as $cliente)
+                                        <option value="{{ $cliente->id }}" data-name="{{ $cliente->nombre }}"
+                                            data-ape1="{{ $cliente->apellido1 }}" data-ape2="{{ $cliente->apellido2 }}">
+                                            {{ $cliente->cedula }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <input type="text" disabled id="cl_name" class="form-control">
+                            </div>
+                            <div class="col-lg-3">
+                                <input type="text" disabled id="cl_ape1" class="form-control">
+                            </div>
+                            <div class="col-lg-3">
+                                <input type="text" disabled id="cl_ape2" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-3">
                                 <select name="articulos" class="form-control input-lg" id="articulos">
-                                    <option value="-1">Seleccione para añadir articulo</option>
+                                    <option value="-1" data-notselectable="true">Seleccione para añadir articulo
+                                    </option>
                                     @foreach ($articulos as $articulo)
                                         <option value="{{ $articulo->id }}">{{ $articulo->descripcion }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-lg-4">
-                                <input type="number" class="form-control form-control-sm" placeholder="Prestamo" value="0"
-                                    id="prestamo">
+                            <div class="col-lg-3">
+                                <input type="number" class="form-control form-control-sm" placeholder="Prestamo"
+                                    value="0" id="prestamo">
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-3">
                                 <button class="btn btn-xs btn-info" id="add_item">
                                     Agregar articulo
                                 </button>
@@ -92,21 +117,41 @@
                         </div>
                         <div class="row mt-4">
                             <div class="col-lg-12">
-                                <div id="newjsGrid"></div>
+                                <div id="newjsGrid" style="font-size: 0.8rem"></div>
                             </div>
                         </div>
                         <div class="row mt-4">
-                            <div class="col-lg-4">
+                            <div class="col-lg-3">
                                 <label for="total_prestamo">Total del prestamo</label>
-                                <input type="number" class="form-control" name="total" id="total_prestamo" placeholder="Total del prestamo">
+                                <input type="number" class="form-control" name="total_prestamo" id="total_prestamo"
+                                    placeholder="Total del prestamo">
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-3">
                                 <label for="fecha_prestamo">Fecha de contrato</label>
-                                <input type="date" class="form-control" name="total" id="fecha_prestamo" placeholder="Total del prestamo">
+                                <input type="date" class="form-control" name="fecha_prestamo" id="fecha_prestamo"
+                                    placeholder="Total del prestamo" value="{{ date('Y-m-d') }}">
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="fecha_prestamo">Fecha de vencimiento</label>
+                                <input type="date" class="form-control" name="fecha_vencimiento" id="fecha_vencimiento"
+                                    placeholder="Total del prestamo" value="{{ date('Y-m-d') }}">
                             </div>
                             {{-- <div class="col-lg-4">
                                 <input type="number" class="form-control" name="total" id="total_prestamo" placeholder="Total del prestamo">
                             </div> --}}
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-3">
+                                <button class="btn btn-success form-control" id="btn_save_contract">
+                                    <span class="spinner-border spinner-border-sm loading" role="status" aria-hidden="true" hidden></span>
+                                    <span class=".btn_save_title">Guardar contrato</span>
+                                </button>
+                            </div>
+                            <div class="col-lg-3">
+                                <button class="btn btn-warning form-control" id="btn_print_contract_receipt">Imprimir</button>
+                            </div>
+                            <div class="col-lg-4">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -117,7 +162,16 @@
                     </div>
                 </div>
                 <div class="card" id="historial_cliente" style="display: none">
-                    <div class="card-header">Historial de un cliente</div>
+                    <div class="card-header">
+                        <div class="d-flex">
+                            <p>
+                            <h4>Historial de un cliente</h4>
+                            </p>
+                            <div class="ms-auto">
+                                <button class="btn btn-sm btn-danger" id="btn_history_return">Regresar</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div id="historialJsGrid">
 

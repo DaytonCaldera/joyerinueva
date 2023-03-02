@@ -74,4 +74,14 @@ Route::group(['middleware' => 'auth'], function () {
 	 */
 	Route::get('admin/contratos/historial/{id}',[ContratosController::class,'history'])->name('contratos.cliente');
 	Route::post('admin/add/contrato',[ContratosController::class,'store'])->name('agregar.contrato');
+	Route::get('print/contrato', function(){
+		return view('printable.contrato');
+	})->name('print_contrato');
+
+
+	/**
+	 * Rutas para administracion general
+	 */
+	Route::get('/admin/parametros',[HomeController::class, 'index'])->name('parametros');
+
 });

@@ -69,6 +69,29 @@ window.confirmDialog = function (title, msg, icon, success) {
  * Toast
  */
 
+window.confirmToast = function (msg) {
+  var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: true,
+    showCancelButton: callback != null ? true : false,
+    confirmButtonText: 'Si',
+    cancelButtonText: 'No',
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: function didOpen(toast) {}
+  });
+  Toast.fire({
+    icon: 'success',
+    title: msg
+  }).then(function (result) {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed && callback != null) {
+      callback();
+    }
+  });
+};
 window.successToast = function (msg) {
   var Toast = Swal.mixin({
     toast: true,

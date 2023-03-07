@@ -31,6 +31,8 @@ class Contratos {
         this.newBlock = $("#nuevo_contrato");
         this.searchBlock = $("#buscar_contrato");
         this.historyBlock = $("#historial_cliente");
+        this.searchModal = $("#buscar_cliente_avanzado");
+
 
         //botones
         this.btn_history_return = $("#btn_history_return");
@@ -41,11 +43,15 @@ class Contratos {
         this.btnCancelNewContract = $('#btn_cancelar_nuevo_contrato');
         this.btnSaveContract = $("#btn_save_contract");
         this.btnPrintReceipt = $("#btn_print_contract_receipt");
+        this.btnOpenSearchModal = $("#btn_open_search_modal");
+        this.btnsSelectClient = $(".select-cliente");
+        this.btnCloseSearchModal = $("#btnCloseSearchModal")
 
         //tablas
         this.new_contract_jsgrid = $("#newjsGrid");
         this.historyJsGrid = $("#historialJsGrid");
         this.client_id_history = $("#client_id_history");
+        this.client_search_datatable = $('#table_clientes_avanzado');
 
         //datepickers
         this.dpFechaContrato = $("#fecha_contrato");
@@ -54,10 +60,8 @@ class Contratos {
         this.initContractControls();
     }
 
-
-
     initContractControls() {
-
+        let $this = this;
         //botones
         this.btnHistory.on('click', event => this.historyClientEvent(event, this.btnHistory));
         this.btnSearch.on('click', event => this.searchContractEvent(event, this.btnSearch));
@@ -65,7 +69,13 @@ class Contratos {
         this.btnAddItem.on('click', event => this.addItem(event, this.btnAddItem));
         this.btnCancelNewContract.on('click', event => this.cancelNewContract(event));
         this.btnSaveContract.on('click', event => { this.saveContract(event, this.btnSaveContract) });
+        this.btnSaveState('normal');
         this.btnPrintReceipt.on('click', event => { this.printReceipt(event, this.btnPrintReceipt) });
+        this.btnOpenSearchModal.on('click', event => { this.openSearchClientModalEvent(event, this.btnOpenSearchModal) });
+        this.btnCloseSearchModal.on('click', event => { this.closeSearchClientModal(event, this.btnCloseSearchModal) });
+        this.btnsSelectClient.each(function (index, element) {
+            element.addEventListener('click', event => { $this.selectClientFromTable(event, element) })
+        });
 
         //select2
         this.articulos_select.select2({ width: '100%' });
@@ -73,7 +83,20 @@ class Contratos {
         this.client_search.on("select2:select", e => { this.showClientFound() });
 
         //datepicker
+        this.dpFechaContrato.on('change', event => { this.contrato.fecha_contrato = this.dpFechaContrato.val() });
+        this.dpFechaVencimiento.on('change', event => { this.contrato.fecha_vencimiento = this.dpFechaVencimiento.val() });
 
+        //DataTables
+        this.client_search_datatable.DataTable({
+            responsive: true,
+        }).columns(0).visible(false); //hide the ID column
+
+    }
+
+    selectClientFromTable(e, btn) {
+        let data = JSON.parse(btn.dataset.json);
+        this.showClientFound(data);
+        this.closeSearchClientModal();
     }
 
     restoreControls() {
@@ -85,10 +108,23 @@ class Contratos {
     }
     newContractEvent(e, btn) {
         this.showNewBlock();
+        this.setFechasDP();
         this.loadNewItemsTable();
     }
     historyClientEvent(e, btn) {
         this.getHistoryClient(btn);
+    }
+
+    openSearchClientModalEvent(e, btn) {
+        this.searchModal.modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        this.searchModal.modal('show');
+    }
+
+    closeSearchClientModal() {
+        this.searchModal.modal('hide');
     }
 
     showMainRow() {
@@ -99,21 +135,37 @@ class Contratos {
         this.main_row.hide();
     }
 
-    showClientFound() {
-        this.client_name.val(this.client_search.find(':selected').data('name'));
-        this.client_ape1.val(this.client_search.find(':selected').data('ape1'));
-        this.client_ape2.val(this.client_search.find(':selected').data('ape2'));
+    showClientFound(data = null) {
+        if (data != null) {
+            this.client_name.val(data.nombre);
+            this.client_ape1.val(data.apellido1);
+            this.client_ape2.val(data.apellido2);
+            this.client_search.val(data.id).trigger('change')
+        } else {
+            let data = this.client_search.find(':selected');
+            this.client_name.val(data.data('name'));
+            this.client_ape1.val(data.data('ape1'));
+            this.client_ape2.val(data.data('ape2'));
+        }
     }
 
     setTotal(val, notShow = false) {
-        this.total = val;
+        this.contrato.total = val;
         if (!notShow)
-            this.total_container.val(this.total)
+            this.total_container.val(this.contrato.total)
     }
     getTotal() {
-        return this.total;
+        return this.contrato.total;
     }
 
+    setFechasDP() {
+        let fecha_contrato = new Date().toISOString().slice(0, 10);;
+        let fecha_vencimiento = new Date();
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        fecha_vencimiento.setMonth(fecha_vencimiento.getMonth() + 1);
+        this.dpFechaContrato.val(fecha_contrato)
+        this.dpFechaVencimiento.val(fecha_vencimiento.toISOString().slice(0, 10))
+    }
 
 
     showSearchBlock() {
@@ -148,7 +200,7 @@ class Contratos {
         let $this = this;
         $.ajax({
             beforeSend: function () {
-                btn.querySelector('.loading').removeAttribute('hidden');
+                btn.find('.loading').removeAttr('hidden');
             },
             type: "GET",
             url: "/admin/contratos/historial/" + $this.client_id_history.val(),
@@ -259,7 +311,8 @@ class Contratos {
         this.contrato = {
             inventario: [],
             total: 0,
-            fecha_contrato: new Date().toLocaleDateString('es'),
+            fecha_contrato: '',
+            fecha_vencimiento: '',
             cliente: 0
         };
     }
@@ -274,13 +327,82 @@ class Contratos {
     }
 
     saveContract(e, btn) {
-        console.log(this.contrato);
-        btn.find('.loading').removeAttr('hidden');
-        setTimeout(() => {
-            btn.find('.loading').attr('hidden', 'true');
-            successToast('Contrato guardado correctamente');
-            btn.prop("disabled", true);
-        }, 2000)
+        const json = JSON.stringify(this.contrato);
+        console.log(json);
+        if (this.validContract()) {
+            console.log('Valid contract!');
+            this.btnSaveState('saving');
+            $.ajax({
+                url: '/admin/add/contrato',
+                type: 'POST',
+                data: {
+                    contrato: json
+                },
+                success: function (data) {
+                    this.btnSaveState('saved');
+                }
+            });
+        }
+
+    }
+
+    btnSaveState(state) {
+        switch (state) {
+            case 'normal':
+                console.log('normal state');
+                this.btnSaveContract.find('.loading').prop('hidden', true);
+                this.btnSaveContract.find('.btn_save_title').html('Guardar contrato')
+                this.btnSaveContract.removeClass('btn-warning');
+                this.btnSaveContract.removeClass('btn-primary');
+                this.btnSaveContract.addClass('btn-success');
+                this.btnSaveContract.prop("disabled", false);
+                this.btnPrintReceipt.hide();
+                break;
+            case 'saving':
+                console.log('saving state');
+                this.btnSaveContract.find('.loading').removeAttr('hidden');
+                this.btnSaveContract.find('.btn_save_title').html(' ...Guardando')
+                this.btnSaveContract.removeClass('btn-success');
+                this.btnSaveContract.addClass('btn-warning');
+                this.btnSaveContract.prop("disabled", true);
+                this.btnPrintReceipt.hide();
+                break;
+            case 'saved':
+                console.log('saved state');
+                this.btnSaveContract.find('.loading').prop('hidden', true);
+                this.btnSaveContract.find('.btn_save_title').html(' Guardado!')
+                this.btnSaveContract.removeClass('btn-warning');
+                this.btnSaveContract.addClass('btn-primary');
+                this.btnSaveContract.prop("disabled", true);
+                this.btnPrintReceipt.show();
+                break;
+            default:
+                console.log('nothing done');
+                break
+
+        }
+    }
+
+    validContract() {
+        if ((this.contrato.inventario == null || this.contrato.inventario == [])) {
+            failToast('No se ha agregado ningun articulo');
+            return false;
+        }
+        if (this.contrato.total == 0) {
+            failToast('El total del contrato no puede ser 0');
+            return false;
+        }
+        if (this.contrato.cliente == 0) {
+            failToast('No se ha cargado ningun cliente');
+            return false;
+        }
+        if (this.contrato.fecha_contrato == '') {
+            this.contrato.fecha_contrato = this.fecha_contrato.val();
+        }
+        if (this.contrato.fecha_vencimiento == '') {
+            this.contrato.fecha_vencimiento = this.fecha_vencimiento.val();
+        }
+        return true;
     }
 
     saveLastDataInput() {

@@ -76,6 +76,14 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-3">
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#buscar_cliente_avanzado" id="btn_open_search_modal">
+                                    Busqueda cliente avanzado
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-3">
                                 <select name="clientes_search" class="form-control" id="clientes_search">
                                     <option value="-1" data-notselectable="true">Buscar cedula de cliente</option>
                                     @foreach ($clientes as $cliente)
@@ -128,13 +136,14 @@
                             </div>
                             <div class="col-lg-3">
                                 <label for="fecha_prestamo">Fecha de contrato</label>
-                                <input type="date" class="form-control" name="fecha_prestamo" id="fecha_prestamo"
+                                <input type="date" class="form-control" name="fecha_contrato" id="fecha_contrato"
                                     placeholder="Total del prestamo" value="{{ date('Y-m-d') }}">
                             </div>
                             <div class="col-lg-3">
                                 <label for="fecha_prestamo">Fecha de vencimiento</label>
-                                <input type="date" class="form-control" name="fecha_vencimiento" id="fecha_vencimiento"
-                                    placeholder="Total del prestamo" value="{{ date('Y-m-d') }}">
+                                <input type="date" class="form-control" name="fecha_vencimiento"
+                                    id="fecha_vencimiento" placeholder="Total del prestamo"
+                                    value="{{ (new DateTime(date('Y-m-d')))->modify('+1 month')->format('Y-m-d') }}">
                             </div>
                             {{-- <div class="col-lg-4">
                                 <input type="number" class="form-control" name="total" id="total_prestamo" placeholder="Total del prestamo">
@@ -143,12 +152,14 @@
                         <div class="row mt-4">
                             <div class="col-lg-3">
                                 <button class="btn btn-success form-control" id="btn_save_contract">
-                                    <span class="spinner-border spinner-border-sm loading" role="status" aria-hidden="true" hidden></span>
-                                    <span class=".btn_save_title">Guardar contrato</span>
+                                    <span class="spinner-border spinner-border-sm loading" role="status"
+                                        aria-hidden="true" hidden></span>
+                                    <span class="btn_save_title">Guardar contrato</span>
                                 </button>
                             </div>
                             <div class="col-lg-3">
-                                <button class="btn btn-warning form-control" id="btn_print_contract_receipt">Imprimir</button>
+                                <button class="btn btn-warning form-control"
+                                    id="btn_print_contract_receipt">Imprimir</button>
                             </div>
                             <div class="col-lg-4">
                             </div>
@@ -181,6 +192,7 @@
             </div>
         </div>
         @include('layouts.footers.auth.footer')
+        @include('paginas.contratos.buscar_modal', ['clientes' => $clientes])
     </div>
 @endsection
 

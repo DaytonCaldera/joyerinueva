@@ -1,5 +1,7 @@
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
+// require('bootstrap');
+require( 'datatables.net-dt');
 require('jsgrid');
 require('select2');
 import PerfectScrollbar from 'perfect-scrollbar';

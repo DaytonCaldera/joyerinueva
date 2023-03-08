@@ -34,7 +34,7 @@ class ClientesController extends Controller
                 'apellido2' => $cliente->apellido2,
             ];
         }
-        $json['pagination']['more'] = true;
+        $json['pagination']['more'] = false;
         return response()->json($json);
     }
 

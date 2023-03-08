@@ -7,7 +7,7 @@
                 
             </div>
             <div class="modal-body">
-                <table id="table_clientes_avanzado" style="width:100% !important">
+                <table id="table_clientes_avanzado" style="width:100% !important;font-size: 12px">
                     <thead>
                         <tr>
                             <th>Id</th>

@@ -56,24 +56,25 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/admin/clientes', [ClientesController::class, 'index'])->name('clientes');
 	Route::get('/admin/usuarios', [HomeController::class, 'index'])->name('usuarios');
 	Route::get('/admin/articulos', [ArticuloController::class, 'admin_view'])->name('articulos');
-
+	
 	/*
-		Rutas para administracion de Familia - Categoria - Articulos
+	Rutas para administracion de Familia - Categoria - Articulos
 	*/
 	Route::post('/admin/add/familia', [ArticuloController::class, 'add_familia'])->name('agregar.familia');
 	Route::post('/admin/add/categoria', [ArticuloController::class, 'add_categoria'])->name('agregar.categoria');
 	Route::post('/admin/add/articulo', [ArticuloController::class, 'add_articulo'])->name('agregar.articulo');
-
+	
 	/**
 	 * Rutas para administracion de clientes
 	 */
 	Route::post('/admin/add/cliente', [ClientesController::class,'store'])->name('agregar.cliente');
+	Route::get('/clientes/select',[ClientesController::class,'get_select2_items'])->name('obtener.cliente.select');
 
 	/**
 	 * Rutas para administracion de contratos
 	 */
-	Route::get('admin/contratos/historial/{id}',[ContratosController::class,'history'])->name('contratos.cliente');
-	Route::post('admin/add/contrato',[ContratosController::class,'store'])->name('agregar.contrato');
+	Route::get('/admin/contratos/historial/{id}',[ContratosController::class,'history'])->name('contratos.cliente');
+	Route::post('/admin/add/contrato/',[ContratosController::class,'store'])->name('agregar.contrato');
 	Route::get('print/contrato', function(){
 		return view('printable.contrato');
 	})->name('print_contrato');

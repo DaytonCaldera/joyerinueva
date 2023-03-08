@@ -70,30 +70,29 @@
                                     contrato</button>
                             </div>
                         </div>
-                        {{-- <span class="title">Nuevo contrato</span>
-                        <button class="btn btn-sm btn-danger">Cancelar contrato</button> --}}
                     </div>
                     <div class="card-body">
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-lg-3">
                                 <button type="button" class="btn btn-primary" data-toggle="modal"
                                     data-target="#buscar_cliente_avanzado" id="btn_open_search_modal">
                                     Busqueda cliente avanzado
                                 </button>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row mt-2">
-                            <div class="col-lg-3">
+                            <div class="col-lg-6">
+                                <label for="clientes_search">Cliente</label>
                                 <select name="clientes_search" class="form-control" id="clientes_search">
-                                    <option value="-1" data-notselectable="true">Buscar cedula de cliente</option>
-                                    @foreach ($clientes as $cliente)
+                                    <option value="-1" data-notselectable="true">Buscar cedula o nombre de cliente</option>
+                                    {{-- @foreach ($clientes as $cliente)
                                         <option value="{{ $cliente->id }}" data-name="{{ $cliente->nombre }}"
                                             data-ape1="{{ $cliente->apellido1 }}" data-ape2="{{ $cliente->apellido2 }}">
                                             {{ $cliente->cedula }}</option>
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
                             </div>
-                            <div class="col-lg-3">
+                            {{-- <div class="col-lg-3">
                                 <input type="text" disabled id="cl_name" class="form-control">
                             </div>
                             <div class="col-lg-3">
@@ -101,8 +100,9 @@
                             </div>
                             <div class="col-lg-3">
                                 <input type="text" disabled id="cl_ape2" class="form-control">
-                            </div>
+                            </div> --}}
                         </div>
+                        <hr>
                         <div class="row mt-4">
                             <div class="col-lg-3">
                                 <select name="articulos" class="form-control input-lg" id="articulos">
@@ -126,6 +126,16 @@
                         <div class="row mt-4">
                             <div class="col-lg-12">
                                 <div id="newjsGrid" style="font-size: 0.8rem"></div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-6">
+                                <label for="descripcion_contrato">Descripcion</label>
+                                <textarea class="form-control" name="descripcion_contrato" id="descripcion_contrato" rows="5" style="resize: none;font-size: 12px;"></textarea>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="descripcion_final">Descripcion final en el recibo</label>
+                                <textarea class="form-control" name="descripcion_final" id="descripcion_final" rows="5" style="resize: none;font-size: 12px;" disabled></textarea>
                             </div>
                         </div>
                         <div class="row mt-4">
@@ -192,7 +202,7 @@
             </div>
         </div>
         @include('layouts.footers.auth.footer')
-        @include('paginas.contratos.buscar_modal', ['clientes' => $clientes])
+        {{-- @include('paginas.contratos.buscar_modal', ['clientes' => $clientes]) --}}
     </div>
 @endsection
 

@@ -43,7 +43,7 @@ class ContratosController extends Controller
      */
     public function store(StoreContratosRequest $request)
     {
-        //
+        return response()->json($request);
     }
 
     /**

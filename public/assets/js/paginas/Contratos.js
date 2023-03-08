@@ -1,6 +1,8 @@
 document.onreadystatechange = function () {
     if (document.readyState == "complete") {
+        window.startLoading();
         const root = new Contratos();
+        window.stopLoading();
     }
 }
 
@@ -14,7 +16,8 @@ class Contratos {
             total: 0,
             fecha_contrato: '',
             fecha_vencimiento: '',
-            cliente: 0
+            cliente: 0,
+            descripcion: ''
         };
 
         //inputs
@@ -25,6 +28,8 @@ class Contratos {
         this.client_name = $('#cl_name');
         this.client_ape1 = $('#cl_ape1');
         this.client_ape2 = $('#cl_ape2');
+        this.contract_description = $("#descripcion_contrato");
+        this.final_description = $("#descripcion_final");
 
         //containers
         this.main_row = $("#main_row");
@@ -62,6 +67,7 @@ class Contratos {
 
     initContractControls() {
         let $this = this;
+
         //botones
         this.btnHistory.on('click', event => this.historyClientEvent(event, this.btnHistory));
         this.btnSearch.on('click', event => this.searchContractEvent(event, this.btnSearch));
@@ -77,10 +83,26 @@ class Contratos {
             element.addEventListener('click', event => { $this.selectClientFromTable(event, element) })
         });
 
+        //inputs
+        this.contract_description.on('keyup', event => { this.descriptionEvent(event, this.contract_description) })
+
         //select2
         this.articulos_select.select2({ width: '100%' });
-        this.client_search.select2({ width: '100%' });
-        this.client_search.on("select2:select", e => { this.showClientFound() });
+        this.client_search.select2({
+            language: "es",
+            ajax: {
+                url: '/clientes/select',
+                tags: "true",
+                data: function (params) {
+                    return {
+                        search: params.term // modified search query
+                    };
+                },
+            },
+            minimumInputLength: 1,
+            width: '100%'
+        });
+        this.client_search.on("select2:select", e => { this.setClient() });
 
         //datepicker
         this.dpFechaContrato.on('change', event => { this.contrato.fecha_contrato = this.dpFechaContrato.val() });
@@ -89,7 +111,11 @@ class Contratos {
         //DataTables
         this.client_search_datatable.DataTable({
             responsive: true,
+            language: DataTableLanguage
         }).columns(0).visible(false); //hide the ID column
+
+        console.log('ya termino');
+        window.stopLoading();
 
     }
 
@@ -123,6 +149,17 @@ class Contratos {
         this.searchModal.modal('show');
     }
 
+    descriptionEvent(event, textarea) {
+        this.updateFinalDescription(event.currentTarget.value);
+    }
+
+    updateFinalDescription(text = null) {
+        if (text == null)
+            text = this.contract_description.val();
+        let total_text = "\nVALORADO EN ₡" + this.getTotal(true);
+        this.final_description.val(text + total_text);
+    }
+
     closeSearchClientModal() {
         this.searchModal.modal('hide');
     }
@@ -135,18 +172,8 @@ class Contratos {
         this.main_row.hide();
     }
 
-    showClientFound(data = null) {
-        if (data != null) {
-            this.client_name.val(data.nombre);
-            this.client_ape1.val(data.apellido1);
-            this.client_ape2.val(data.apellido2);
-            this.client_search.val(data.id).trigger('change')
-        } else {
-            let data = this.client_search.find(':selected');
-            this.client_name.val(data.data('name'));
-            this.client_ape1.val(data.data('ape1'));
-            this.client_ape2.val(data.data('ape2'));
-        }
+    setClient() {
+        this.contrato.cliente = this.client_search.val();
     }
 
     setTotal(val, notShow = false) {
@@ -154,17 +181,21 @@ class Contratos {
         if (!notShow)
             this.total_container.val(this.contrato.total)
     }
-    getTotal() {
+    getTotal(formatted = false) {
+        if (formatted)
+            return number_format(this.contrato.total)
         return this.contrato.total;
     }
 
     setFechasDP() {
-        let fecha_contrato = new Date().toISOString().slice(0, 10);;
+        let fecha_contrato = new Date().toISOString().slice(0, 10);
         let fecha_vencimiento = new Date();
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
         fecha_vencimiento.setMonth(fecha_vencimiento.getMonth() + 1);
         this.dpFechaContrato.val(fecha_contrato)
-        this.dpFechaVencimiento.val(fecha_vencimiento.toISOString().slice(0, 10))
+        fecha_vencimiento = fecha_vencimiento.toISOString().slice(0, 10)
+        this.dpFechaVencimiento.val(fecha_vencimiento)
+        this.contrato.fecha_contrato = fecha_contrato;
+        this.contrato.fecha_vencimiento = fecha_vencimiento;
     }
 
 
@@ -205,11 +236,11 @@ class Contratos {
             type: "GET",
             url: "/admin/contratos/historial/" + $this.client_id_history.val(),
             success: function (data) {
-                btn.querySelector('.loading').setAttribute('hidden', 'hidden');
+                btn.find('.loading').attr('hidden', 'hidden');
                 if (Object.keys(data).length !== 0) {
                     $this.loadClientHistoryTable(data);
                     $this.showHistoryBlock();
-                    btn.querySelector('.loading').setAttribute('hidden', true);
+                    btn.find('.loading').attr('hidden', true);
                 } else {
                     failToast('El cliente digitado no existe o no tiene contratos');
                 }
@@ -287,11 +318,13 @@ class Contratos {
         this.contrato.inventario.push(data);
         this.setTotal(this.getTotal() + data.prestamo);
         this.new_contract_jsgrid.jsGrid("insertItem", data);
+        this.updateFinalDescription();
         this.resetItems();
     }
 
     updateTotal(item) {
         this.setTotal(this.getTotal() - item.prestamo);
+        this.updateFinalDescription();
     }
 
     resetItems(tableToo = false) {
@@ -324,9 +357,11 @@ class Contratos {
         this.new_contract_jsgrid.html('');
         this.hideAllBlocks();
         this.restoreControls();
+        this.btnSaveState('normal');
     }
 
     saveContract(e, btn) {
+        let $this = this;
         const json = JSON.stringify(this.contrato);
         console.log(json);
         if (this.validContract()) {
@@ -339,7 +374,7 @@ class Contratos {
                     contrato: json
                 },
                 success: function (data) {
-                    this.btnSaveState('saved');
+                    $this.btnSaveState('saved');
                 }
             });
         }

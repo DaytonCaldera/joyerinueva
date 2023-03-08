@@ -113,7 +113,7 @@
                     </div>
                     <div class="card-body pt-0 p-3 text-center">
                         <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
+                            <table class="table align-items-center mb-0" id="articulos_datatable">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -156,19 +156,10 @@
     </div>
     @endsection
     @push('js')
+    <script src="{{ asset('/public/assets/js/paginas/Articulos.js') }}"></script>
         @if (session('success'))
             <script>
-                let alert =
-                    '<div class="toast alert alert-success alert-dismissible text-white" id="successToast" role="alert" aria-live="assertive" id="successToast" aria-atomic="true" style="position:absolute;bottom:20px;right:20px"> {{ session('success') }} </div>';
-                var div = document.createElement('div');
-                div.innerHTML = alert.trim();
-                document.querySelector('body').append(div);
-                let toastHTMLElement = document.getElementById('successToast');
-                let toastElement = new bootstrap.Toast(toastHTMLElement, {
-                    animation: true,
-                    delay: 2000
-                });
-                toastElement.show();
+                successToast({{session('success')}});
             </script>
         @endif
     @endpush

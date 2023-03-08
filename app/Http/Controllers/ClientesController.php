@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreClientesRequest;
 use App\Http\Requests\UpdateClientesRequest;
+use Illuminate\Support\Facades\Request;
 use App\Models\Clientes;
+
 
 class ClientesController extends Controller
 {
@@ -15,7 +17,25 @@ class ClientesController extends Controller
      */
     public function index()
     {
-        return view('paginas.clientes.admin')->with(['clientes'=>Clientes::all()]);
+        return view('paginas.clientes.admin')->with(['clientes' => Clientes::all()]);
+    }
+
+    public function get_select2_items()
+    {
+        $search = Request::input('search');
+        $clientes = Clientes::where('cedula', 'LIKE', $search . '%')->orWhere('nombre', 'LIKE', $search . '%')->orWhere('apellido1', 'LIKE', $search . '%')->orWhere('apellido2', 'LIKE', $search . '%')->get();
+        $json = [];
+        foreach ($clientes as $cliente) {
+            $json['results'][] = [
+                'id' => $cliente->id,
+                'text' => $cliente->cedula . ' - ' . $cliente->nombre . ' ' . $cliente->apellido1 . ' ' . $cliente->apellido2,
+                'nombre' => $cliente->nombre,
+                'apellido1' => $cliente->apellido1,
+                'apellido2' => $cliente->apellido2,
+            ];
+        }
+        $json['pagination']['more'] = true;
+        return response()->json($json);
     }
 
     /**
@@ -44,9 +64,9 @@ class ClientesController extends Controller
         $cliente->direccion = $request->direccion;
         $cliente->telefono = $request->telefono;
         $cliente->problemas = false;
-        if($cliente->save()){
+        if ($cliente->save()) {
             return redirect()->route('clientes')->with(['success' => 'Cliente agregado correctamente']);
-        }else{
+        } else {
             return redirect()->route('clientes')->with(['error' => 'Hubo un error al guardar']);
         }
     }

@@ -1,0 +1,15 @@
+.loading_wrapper {
+    width: 250px;
+    height: 250px;
+    background-color: rgba(0, 0, 0, 0);
+}
+.loading-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.stroke {
+    stroke: #4258d4;
+    fill: none;
+}

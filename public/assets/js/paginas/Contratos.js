@@ -1,8 +1,8 @@
 document.onreadystatechange = function () {
     if (document.readyState == "complete") {
-        window.startLoading();
+        // window.startLoading();
         const root = new Contratos();
-        window.stopLoading();
+        // window.stopLoading();
     }
 }
 
@@ -20,7 +20,9 @@ class Contratos {
             descripcion: ''
         };
 
+
         //inputs
+        this.numero_contrato = $("#num_contrato");
         this.total_container = $("#total_prestamo");
         this.articulos_select = $("#articulos");
         this.prestamo_articulo = $("#prestamo");
@@ -87,9 +89,28 @@ class Contratos {
         this.contract_description.on('keyup', event => { this.descriptionEvent(event, this.contract_description) })
 
         //select2
+        this.initSelect2Components();
+
+
+        //datepicker
+        this.dpFechaContrato.on('change', event => { this.contrato.fecha_contrato = this.dpFechaContrato.val() });
+        this.dpFechaVencimiento.on('change', event => { this.contrato.fecha_vencimiento = this.dpFechaVencimiento.val() });
+
+        //DataTables
+        this.client_search_datatable.DataTable({
+            responsive: true,
+            language: DataTableLanguage
+        }).columns(0).visible(false); //hide the ID column
+
+        // console.log('ya termino');
+        window.stopLoading();
+
+    }
+
+    initSelect2Components() {
         this.articulos_select.select2({ width: '100%' });
         this.client_search.select2({
-            language: "es",
+            language: "custom",
             ajax: {
                 url: '/clientes/select',
                 tags: "true",
@@ -103,20 +124,6 @@ class Contratos {
             width: '100%'
         });
         this.client_search.on("select2:select", e => { this.setClient() });
-
-        //datepicker
-        this.dpFechaContrato.on('change', event => { this.contrato.fecha_contrato = this.dpFechaContrato.val() });
-        this.dpFechaVencimiento.on('change', event => { this.contrato.fecha_vencimiento = this.dpFechaVencimiento.val() });
-
-        //DataTables
-        this.client_search_datatable.DataTable({
-            responsive: true,
-            language: DataTableLanguage
-        }).columns(0).visible(false); //hide the ID column
-
-        console.log('ya termino');
-        window.stopLoading();
-
     }
 
     selectClientFromTable(e, btn) {
@@ -130,7 +137,21 @@ class Contratos {
     }
 
     searchContractEvent(e, btn) {
-        this.showSearchBlock();
+        // this.showSearchBlock();
+        $.ajax({
+            url: '/admin/get/contrato',
+            type: 'GET',
+            data: {
+                contrato: this.numero_contrato.val()
+            },
+            dataType: 'json',
+            success: (data) => { console.log(data); }
+        });8 
+    }
+    setFoundedContract() {
+        this.contrato = {
+            
+        }
     }
     newContractEvent(e, btn) {
         this.showNewBlock();
@@ -158,6 +179,7 @@ class Contratos {
             text = this.contract_description.val();
         let total_text = "\nVALORADO EN ₡" + this.getTotal(true);
         this.final_description.val(text + total_text);
+        this.contrato.descripcion = text + total_text;
     }
 
     closeSearchClientModal() {
@@ -274,7 +296,7 @@ class Contratos {
         });
     }
 
-    loadNewItemsTable() {
+    loadNewItemsTable(data = null) {
         let $this = this;
         this.new_contract_jsgrid.jsGrid({
             autoload: true,
@@ -366,7 +388,7 @@ class Contratos {
         console.log(json);
         if (this.validContract()) {
             console.log('Valid contract!');
-            this.btnSaveState('saving');
+            this.btnSaveState('normal');
             $.ajax({
                 url: '/admin/add/contrato',
                 type: 'POST',

@@ -25,7 +25,8 @@
 </head>
 
 <body class="{{ $class ?? '' }}">
-    @include('components.loading')
+    {{-- @include('components.loading') --}}
+    <div class="spinner"></div>
     @guest
         @yield('content')
     @endguest

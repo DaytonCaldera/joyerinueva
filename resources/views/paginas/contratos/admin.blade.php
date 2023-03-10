@@ -12,7 +12,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <input class="form-control" type="text"
+                                <input class="form-control" type="text" id="num_contrato"
                                     placeholder="Ingrese un numero de contrato para buscar" onfocus="focused(this)"
                                     onfocusout="defocused(this)">
                             </div>

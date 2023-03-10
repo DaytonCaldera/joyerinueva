@@ -8,19 +8,34 @@ window.number_format = function (number) {
     return formattedNumber;
 
 }
-
+window.loadingModal = false;
 window.startLoading = function () {
     $("#loading").modal({
         backdrop: 'static',
         keyboard: false,
     });
     $("#loading").modal('show');
+    $("#loading").on('shown.bs.modal', function () {
+        window.loadingModal = true;
+    });
 }
 
 window.stopLoading = function () {
-    setTimeout(() => { $("#loading").modal('hide'); }, 500)
-
+    $stopLoadingInterval = setInterval(function () {
+        if (!window.loadingModal) {
+            setTimeout(() => { $("#loading").modal('hide'); }, 500);
+        }
+    }, 500);
+    $("#loading").on('hidden.bs.modal', function () {
+        window.loadingModal = false;
+        clearInterval($stopLoadingInterval);
+    });
 }
+
+window.onload = function () {
+    const spinner = document.querySelector('.spinner');
+    spinner.parentElement.removeChild(spinner);
+};
 
 window.DataTableLanguage = {
     "lengthMenu": "Mostrar _MENU_ registros por pagina",

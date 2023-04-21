@@ -10,6 +10,7 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\ArticuloController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ContratosController;
+use App\Http\Controllers\PrintController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -87,5 +88,7 @@ Route::group(['middleware' => 'auth'], function () {
 	 * Rutas para administracion general
 	 */
 	Route::get('/admin/parametros',[HomeController::class, 'index'])->name('parametros');
+
+	Route::get('/printer/print-ticket', [PrintController::class,'printTicket']);
 
 });

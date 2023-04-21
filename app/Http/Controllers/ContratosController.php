@@ -31,10 +31,22 @@ class ContratosController extends Controller
     {
         $search = Request::input('contrato');
         $contrato = Contratos::find($search);
-        $inventario = Inventario::where('id_contrato', '=', $contrato->id)->get();
+        $inventario = [];
+        // var_dump($contrato->articulos[0]->id);
+        // return;
+        foreach ($contrato->inventario as $i) {
+            
+            $inventario[] = [
+                'id_articulo' => $i->articulo,
+                'descripcion' => $contrato->articulos->where('id',$i->articulo)->first()->descripcion,
+                'cantidad' => $i->cantidad
+            ];
+        }
+
+
         return response()->json([
             'contrato' => $contrato,
-            'inventario' => $inventario,
+            'inventario' => $inventario
         ]);
     }
 
@@ -75,7 +87,7 @@ class ContratosController extends Controller
                 $insert_inventario[] = [
                     'id_contrato' => $contrato->id,
                     'articulo' => $invent->id_articulo,
-                    'cantidad' => $invent->prestamo
+                    'cantidad' => $invent->cantidad
                 ];
             }
             Inventario::insert($insert_inventario);

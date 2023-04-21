@@ -7,6 +7,7 @@
     <title>Test</title>
 </head>
 <body>
-    {{ dd(Auth::user()); }}
+    {{-- {{ dd(Auth::user()); }} --}}
+    
 </body>
 </html>

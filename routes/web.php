@@ -80,6 +80,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('print/contrato', function(){
 		return view('printable.contrato');
 	})->name('print_contrato');
+	Route::get('test/openai',[HomeController::class,'openai']);
 
 
 	/**

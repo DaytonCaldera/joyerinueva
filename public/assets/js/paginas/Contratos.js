@@ -137,7 +137,7 @@ class Contratos {
     }
 
     searchContractEvent(e, btn) {
-        // this.showSearchBlock();
+        let $this = this;
         $.ajax({
             url: '/admin/get/contrato',
             type: 'GET',
@@ -145,14 +145,28 @@ class Contratos {
                 contrato: this.numero_contrato.val()
             },
             dataType: 'json',
-            success: (data) => { console.log(data); }
-        });8 
+            success: (data) => { $this.setFoundedContract(data); }
+        }); 8
     }
-    setFoundedContract() {
+    setFoundedContract(data = null) {
         this.contrato = {
-            
+            inventario: data.contrato.inventario,
+            total: data.contrato.prestamo,
+            fecha_contrato: data.contrato.fecha_contrato,
+            fecha_vencimiento: data.contrato.fecha_vencimiento,
+            // cliente: 0,
+            descripcion: data.contrato.descripcion
         }
+
+        console.log(this.contrato);
+        this.renderFoundedContract();
     }
+    renderFoundedContract() {
+        this.setFechasDP(true);
+        this.loadNewItemsTable(true);
+        this.showNewBlock();
+    }
+    
     newContractEvent(e, btn) {
         this.showNewBlock();
         this.setFechasDP();
@@ -209,15 +223,21 @@ class Contratos {
         return this.contrato.total;
     }
 
-    setFechasDP() {
-        let fecha_contrato = new Date().toISOString().slice(0, 10);
-        let fecha_vencimiento = new Date();
-        fecha_vencimiento.setMonth(fecha_vencimiento.getMonth() + 1);
-        this.dpFechaContrato.val(fecha_contrato)
-        fecha_vencimiento = fecha_vencimiento.toISOString().slice(0, 10)
-        this.dpFechaVencimiento.val(fecha_vencimiento)
-        this.contrato.fecha_contrato = fecha_contrato;
-        this.contrato.fecha_vencimiento = fecha_vencimiento;
+    setFechasDP(onlyRender = false) {
+        if(!onlyRender){
+            let fecha_contrato = new Date().toISOString().slice(0, 10);
+            let fecha_vencimiento = new Date();
+            fecha_vencimiento.setMonth(fecha_vencimiento.getMonth() + 1);
+            this.dpFechaContrato.val(fecha_contrato)
+            fecha_vencimiento = fecha_vencimiento.toISOString().slice(0, 10)
+            this.dpFechaVencimiento.val(fecha_vencimiento)
+            this.contrato.fecha_contrato = fecha_contrato;
+            this.contrato.fecha_vencimiento = fecha_vencimiento;
+
+        }else{
+            this.dpFechaContrato.val(this.contrato.fecha_contrato)
+            this.dpFechaVencimiento.val(this.contrato.fecha_vencimiento)
+        }
     }
 
 
@@ -296,7 +316,8 @@ class Contratos {
         });
     }
 
-    loadNewItemsTable(data = null) {
+    loadNewItemsTable(isLoaded = false) {
+        console.log(this.contrato.inventario);
         let $this = this;
         this.new_contract_jsgrid.jsGrid({
             autoload: true,
@@ -310,14 +331,16 @@ class Contratos {
             fields: [
                 { name: "id_articulo", title: "Id Articulo", type: "text", editing: false },
                 { name: "descripcion", title: "Articulo", type: "text", editing: false },
-                { name: "prestamo", title: "Prestamo", type: "number" },
+                { name: "cantidad", title: "Prestamo", type: "number" },
                 {
                     type: "control",
                     editButton: false
                 }
             ]
         });
-
+        if(isLoaded){
+            this.new_contract_jsgrid.jsGrid('loadData', this.contrato.inventario);
+        }
     }
 
     addItem() {
@@ -335,17 +358,17 @@ class Contratos {
         let data = {
             id_articulo: articulo.id,
             descripcion: articulo.text,
-            prestamo: parseInt(prestamo.val()),
+            cantidad: parseInt(prestamo.val()),
         }
         this.contrato.inventario.push(data);
-        this.setTotal(this.getTotal() + data.prestamo);
+        this.setTotal(this.getTotal() + data.cantidad);
         this.new_contract_jsgrid.jsGrid("insertItem", data);
         this.updateFinalDescription();
         this.resetItems();
     }
 
     updateTotal(item) {
-        this.setTotal(this.getTotal() - item.prestamo);
+        this.setTotal(this.getTotal() - item.cantidad);
         this.updateFinalDescription();
     }
 
